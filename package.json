@@ -4,6 +4,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js",
     "heroku-postbuild": "npm install --prefix nox-front-end && npm run build --prefix nox-front-end"
   },
   "keywords": [],
