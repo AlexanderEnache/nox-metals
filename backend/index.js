@@ -3,10 +3,12 @@ import dotenv from "dotenv";
 import path from "path";
 import { connectDB } from "./config/db.js";
 import userRoutes from './routes/user.route.js';
+import { fileURLToPath } from 'url';
 
 const app = express();
 app.use(express.json());
 const PORT = process.env.PORT || 5000;
+
 
 // console.log(__dirname + " DIRECTORY NAME");
 // dotenv.config();
@@ -17,11 +19,20 @@ const PORT = process.env.PORT || 5000;
 
 const router = express.Router();
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+app.use(express.static(path.join(__dirname, '../nox-front-end/build')));
+
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, '../nox-front-end/build/index.html'));
+});
+
 // app.use('/api/users', userRoutes);
 
-app.get("/", async(req, res) => {
+// app.get("/", async(req, res) => {
 
-});
+// });
 
 // app.get("/api", (req, res) => {
 //   res.send({message: "This Message"});
@@ -68,6 +79,7 @@ app.use('/api', userRoutes);
 //     res.status(500).json({ message: 'Server error.' });
 //   }
 // });
+
 
 app.listen(PORT, () => {
   connectDB();
