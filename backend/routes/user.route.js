@@ -8,7 +8,7 @@ const router = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret_here';
 
 router.post('/create-account', async (req, res) => {
-  const { userId, username, password } = req.body;
+  const { userId, username, password, isAdmin } = req.body;
 
   console.log(req.body + " " + userId + " " + username + " " + password);
 
@@ -31,7 +31,8 @@ router.post('/create-account', async (req, res) => {
     const newUser = new User({
       userId,
       username,
-      password: hashedPassword
+      password: hashedPassword,
+      isAdmin
     });
 
     await newUser.save();

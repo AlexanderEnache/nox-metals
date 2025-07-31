@@ -3,8 +3,6 @@ import AutoIncrementFactory from 'mongoose-sequence';
 
 const AutoIncrement = AutoIncrementFactory(mongoose);
 
-// const mongoose = require('mongoose');
-
 const userSchema = new mongoose.Schema({
   userId: {
     type: Number,
@@ -19,6 +17,10 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
     required: true
+  },
+  isAdmin: {
+    type: Boolean,
+    default: false, 
   }
 }, {
   timestamps: true  // Optional: adds createdAt and updatedAt fields

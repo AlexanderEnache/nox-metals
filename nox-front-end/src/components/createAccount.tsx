@@ -3,21 +3,31 @@ import React, { useState, ChangeEvent, FormEvent } from 'react';
 interface FormData {
   username: string;
   password: string;
+  isAdmin: boolean;
 }
 
 const CreateAccount: React.FC = () => {
   const [formData, setFormData] = useState<FormData>({
     username: '',
     password: '',
+    isAdmin: false,  // default to false
   });
 
   const [message, setMessage] = useState<string>('');
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+    const { name, value, type } = e.target;
+    if (type === 'radio') {
+      setFormData({
+        ...formData,
+        isAdmin: value === 'true',
+      });
+    } else {
+      setFormData({
+        ...formData,
+        [name]: value,
+      });
+    }
   };
 
   const handleSubmit = async (e: FormEvent) => {
@@ -34,7 +44,7 @@ const CreateAccount: React.FC = () => {
 
       if (response.ok) {
         setMessage('Account created successfully!');
-        setFormData({ username: '', password: '' });
+        setFormData({ username: '', password: '', isAdmin: false });
       } else {
         const err = await response.json();
         setMessage(`Error: ${err.message || 'Failed to create account.'}`);
@@ -69,6 +79,30 @@ const CreateAccount: React.FC = () => {
             onChange={handleChange}
             required
           />
+        </div>
+
+        <div>
+          <label>Are you an admin?</label><br />
+          <label>
+            <input
+              type="radio"
+              name="isAdmin"
+              value="true"
+              checked={formData.isAdmin === true}
+              onChange={handleChange}
+            />
+            Yes
+          </label>
+          <label style={{ marginLeft: '1em' }}>
+            <input
+              type="radio"
+              name="isAdmin"
+              value="false"
+              checked={formData.isAdmin === false}
+              onChange={handleChange}
+            />
+            No
+          </label>
         </div>
 
         <button type="submit">Create Account</button>

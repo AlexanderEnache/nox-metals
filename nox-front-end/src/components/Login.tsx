@@ -1,15 +1,22 @@
 import React, { useState, ChangeEvent, FormEvent } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 interface LoginForm {
   username: string;
   password: string;
 }
 
-const Login: React.FC = () => {
+interface LoginProps {
+  setIsLoggedIn: (value: boolean) => void;
+}
+
+const Login: React.FC<LoginProps> = ({ setIsLoggedIn }) => {
   const [formData, setFormData] = useState<LoginForm>({
     username: '',
     password: '',
   });
+
+  const navigate = useNavigate();
 
   const [message, setMessage] = useState<string>('');
 
@@ -33,7 +40,8 @@ const Login: React.FC = () => {
       if (res.ok) {
         const data = await res.json();
         setMessage(`Login successful! Welcome, ${data.username}`);
-        // TODO: save token or redirect as needed
+        setIsLoggedIn(true);
+        navigate('/dashboard');
       } else {
         const err = await res.json();
         setMessage(err.message || 'Login failed');
