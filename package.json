@@ -4,8 +4,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node backend/index.js",
-    "heroku-postbuild": "npm install --prefix nox-front-end && npm run build --prefix nox-front-end"
+    "heroku-postbuild": "cd nox-front-end && npm install && npm run build",
+    "start": "node backend/index.js"
   },
   "type": "module",
   "keywords": [],
