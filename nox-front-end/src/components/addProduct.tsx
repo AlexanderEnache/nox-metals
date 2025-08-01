@@ -7,6 +7,10 @@ interface ProductFormData {
   imageUrl: string;
 }
 
+interface Props {
+  getIsAdmin: (value: void) => boolean;
+}
+
 const AddProduct: React.FC = () => {
   const [formData, setFormData] = useState<ProductFormData>({
     name: '',

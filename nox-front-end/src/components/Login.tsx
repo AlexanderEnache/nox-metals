@@ -1,5 +1,5 @@
 import React, { useState, ChangeEvent, FormEvent } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 interface LoginForm {
   username: string;
@@ -8,9 +8,10 @@ interface LoginForm {
 
 interface LoginProps {
   setIsLoggedIn: (value: boolean) => void;
+  setIsAdmin: (value: boolean) => void;
 }
 
-const Login: React.FC<LoginProps> = ({ setIsLoggedIn }) => {
+const Login: React.FC<LoginProps> = ({ setIsLoggedIn, setIsAdmin }) => {
   const [formData, setFormData] = useState<LoginForm>({
     username: '',
     password: '',
@@ -41,7 +42,8 @@ const Login: React.FC<LoginProps> = ({ setIsLoggedIn }) => {
         const data = await res.json();
         setMessage(`Login successful! Welcome, ${data.username}`);
         setIsLoggedIn(true);
-        navigate('/dashboard');
+        setIsAdmin(data.isAdmin);
+        navigate('/list-products');
       } else {
         const err = await res.json();
         setMessage(err.message || 'Login failed');
@@ -82,6 +84,10 @@ const Login: React.FC<LoginProps> = ({ setIsLoggedIn }) => {
           Login
         </button>
       </form>
+
+      <p style={{ marginTop: '1rem' }}>
+        Don't have an account? <Link to="/create-account">Sign up here</Link>
+      </p>
 
       {message && (
         <p style={{ marginTop: '1rem', color: message.includes('successful') ? 'green' : 'red' }}>

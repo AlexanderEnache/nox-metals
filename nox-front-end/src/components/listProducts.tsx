@@ -1,16 +1,22 @@
 import React, { useState, useEffect, ChangeEvent } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 interface Product {
-  id: number;
+  _id: number;
   name: string;
   price: number;
   description: string;
   imageUrl: string;
 }
 
+interface Props {
+  getIsAdmin: (value: void) => boolean;
+  setEditProfileId: (id: number) => void;
+}
+
 const PRODUCTS_PER_PAGE = 5;
 
-const ListProducts: React.FC = () => {
+const ListProducts: React.FC<Props> = ({ getIsAdmin, setEditProfileId }) => {
   const [products, setProducts] = useState<Product[]>([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [loading, setLoading] = useState<boolean>(true);
@@ -19,29 +25,48 @@ const ListProducts: React.FC = () => {
   const [sortField, setSortField] = useState<'name' | 'price'>('name');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
 
+  const navigate = useNavigate();
+
   useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const res = await fetch('/api/products');
-        if (!res.ok) throw new Error('Failed to fetch products.');
-        const data = await res.json();
-
-        if (Array.isArray(data.products)) {
-          setProducts(data.products);
-        } else {
-          console.error('Expected "products" array but got:', data);
-          setProducts([]);
-        }
-
-        setLoading(false);
-      } catch (err: any) {
-        setError(err.message);
-        setLoading(false);
-      }
-    };
-
     fetchProducts();
   }, []);
+
+  const fetchProducts = async () => {
+    try {
+      const res = await fetch('/api/products');
+      if (!res.ok) throw new Error('Failed to fetch products.');
+      const data = await res.json();
+
+      if (Array.isArray(data.products)) {
+        console.log(data);
+        setProducts(data.products);
+      } else {
+        console.error('Expected "products" array but got:', data);
+        setProducts([]);
+      }
+
+      setLoading(false);
+    } catch (err: any) {
+      setError(err.message);
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async (id: number) => {
+    console.log("HANDLE DELETE " + id);
+    try {
+      const res = await fetch(`/api/delete-product/${id}`, {
+        method: 'DELETE',
+      });
+
+      if (!res.ok) throw new Error('Failed to delete product.');
+
+      // Update local state after successful deletion
+      setProducts(prev => prev.filter(product => product._id !== id));
+    } catch (err: any) {
+      alert(err.message);
+    }
+  };
 
   const handleSearch = (e: ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
@@ -110,15 +135,51 @@ const ListProducts: React.FC = () => {
             <option value="desc">Descending</option>
           </select>
         </label>
+
+          {getIsAdmin() && (
+            <button
+              onClick={() => navigate('/add-product')}
+              style={{ marginTop: '0.5rem', backgroundColor: '#d9534f', color: '#fff', padding: '0.5rem', border: 'none', cursor: 'pointer' }}
+            >
+              Add Product
+            </button>
+          )}
+
+          <button
+              onClick={() => navigate('/')}
+              style={{ marginTop: '0.5rem', backgroundColor: '#1463b3', color: '#fff', padding: '0.5rem', border: 'none', cursor: 'pointer' }}
+            >
+              Logout
+          </button>
       </div>
 
       {currentProducts.map((product) => (
-        <div key={product.id} style={{ border: '1px solid #ccc', marginBottom: '1rem', padding: '1rem' }}>
+        <div key={product._id} style={{ border: '1px solid #ccc', marginBottom: '1rem', padding: '1rem' }}>
           <h3>{product.name}</h3>
           <p><strong>Price:</strong> ${product.price.toFixed(2)}</p>
           <p><strong>Description:</strong> {product.description}</p>
           {product.imageUrl && (
             <img src={product.imageUrl} alt={product.name} style={{ maxWidth: '200px' }} />
+          )}
+
+          {getIsAdmin() && (
+            <button
+              onClick={() => {
+                setEditProfileId(product._id);
+                navigate("/edit-profile");
+              }}
+              style={{ marginTop: '0.5rem', backgroundColor: '#1463b3', color: '#fff', padding: '0.5rem', border: 'none', cursor: 'pointer' }}
+            >
+              Edit
+            </button>
+          )}
+          {getIsAdmin() && (
+            <button
+              onClick={() => handleDelete(product._id)}
+              style={{ marginTop: '0.5rem', backgroundColor: '#d9534f', color: '#fff', padding: '0.5rem', border: 'none', cursor: 'pointer' }}
+            >
+              Delete
+            </button>
           )}
         </div>
       ))}

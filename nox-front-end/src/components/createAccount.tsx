@@ -1,4 +1,5 @@
 import React, { useState, ChangeEvent, FormEvent } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 interface FormData {
   username: string;
@@ -13,6 +14,7 @@ const CreateAccount: React.FC = () => {
     isAdmin: false,  // default to false
   });
 
+  const navigate = useNavigate();
   const [message, setMessage] = useState<string>('');
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -45,6 +47,7 @@ const CreateAccount: React.FC = () => {
       if (response.ok) {
         setMessage('Account created successfully!');
         setFormData({ username: '', password: '', isAdmin: false });
+        navigate('/');
       } else {
         const err = await response.json();
         setMessage(`Error: ${err.message || 'Failed to create account.'}`);

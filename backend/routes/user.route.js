@@ -69,6 +69,7 @@ router.post('/login', async (req, res) => {
     res.json({
       username: user.username,
       token,
+      isAdmin: user.isAdmin
     });
   } catch (err) {
     console.error(err);
