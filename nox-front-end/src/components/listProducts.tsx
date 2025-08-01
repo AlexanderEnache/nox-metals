@@ -108,7 +108,7 @@ const ListProducts: React.FC<Props> = ({ getIsAdmin, setEditProfileId }) => {
   if (error) return <p style={{ color: 'red' }}>{error}</p>;
 
   return (
-    <div>
+    <div style={{ maxWidth: 600, margin: 'auto', padding: 20 }}>
       <h2>Product List</h2>
 
       <input

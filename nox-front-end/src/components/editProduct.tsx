@@ -65,7 +65,7 @@ const EditProduct: React.FC<Props> = ({getEditProfileId}) => {
   if (!product) return <p>Product not found.</p>;
 
   return (
-    <div>
+    <div style={{ maxWidth: 600, margin: 'auto', padding: 20, textAlign: 'center'  }}>
       <h2>Edit Product</h2>
       <form onSubmit={handleSubmit} style={{ maxWidth: '600px' }}>
         <label>

@@ -1,4 +1,5 @@
 import React, { useState, ChangeEvent, FormEvent } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 interface ProductFormData {
   name: string;
@@ -18,6 +19,8 @@ const AddProduct: React.FC = () => {
     description: '',
     imageUrl: '',
   });
+    
+  const navigate = useNavigate();
 
   const [message, setMessage] = useState<string>('');
 
@@ -52,6 +55,7 @@ const AddProduct: React.FC = () => {
       if (response.ok) {
         setMessage('Product added successfully!');
         setFormData({ name: '', price: '', description: '', imageUrl: '' });
+        navigate('/list-products');
       } else {
         const errorData = await response.json();
         setMessage(errorData.message || 'Failed to add product.');
@@ -63,7 +67,7 @@ const AddProduct: React.FC = () => {
   };
 
   return (
-    <div>
+    <div style={{ maxWidth: 600, margin: 'auto', padding: 20, textAlign: 'center' }}>
       <h2>Add Product</h2>
       <form onSubmit={handleSubmit}>
         <div>

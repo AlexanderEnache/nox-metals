@@ -1,5 +1,5 @@
 import React, { useState, ChangeEvent, FormEvent } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 interface FormData {
   username: string;
@@ -59,7 +59,7 @@ const CreateAccount: React.FC = () => {
   };
 
   return (
-    <div>
+    <div style={{ maxWidth: 400, margin: 'auto', padding: 20 }}>
       <h2>Create Account</h2>
       <form onSubmit={handleSubmit}>
         <div>
@@ -106,6 +106,9 @@ const CreateAccount: React.FC = () => {
             />
             No
           </label>
+          <p style={{ marginTop: '1rem' }}>
+                  Already have an Account? <Link to="/">Sign In</Link>
+          </p>
         </div>
 
         <button type="submit">Create Account</button>
